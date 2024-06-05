@@ -153,6 +153,26 @@ public class ProgrammerController implements IObserver {
 
         if(!ensureCredentials())
             return;
+
+        String reportTitle = reportTitleInputField.getText();
+        String reportDescription = reportDescriptionInputField.getText();
+        String coworkerEmail = coworkerList.getSelectionModel().getSelectedItem().getEmail();
+
+        if(coworkerEmail == null) {
+            return;
+        }
+        boolean isUrgent = urgentCheckBox.isSelected();
+
+        service.reportCoworker(reportTitle, reportDescription, coworkerEmail, isUrgent);
+
+        reportTitleInputField.clear();
+        reportDescriptionInputField.clear();
+        urgentCheckBox.setSelected(false);
+
+
+
+
+
     }
 
     public void handleBackButton(ActionEvent event) {
@@ -227,6 +247,11 @@ public class ProgrammerController implements IObserver {
         });
 
 
+
+    }
+
+    @Override
+    public void reportChanged(Report report) {
 
     }
 }

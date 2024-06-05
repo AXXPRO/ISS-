@@ -210,6 +210,40 @@ public class MasterService  implements IService {
 
     }
 
+    @Override
+    public void reportCoworker(String title, String description, String email, boolean urgent) {
+
+        Report report = new Report();
+        report.setName(title);
+        report.setDescription(description);
+        report.setUrgentStatus(urgent);
+        report.setReportedEmail(email);
+        repositoryReport.save(report);
+
+
+        reportChange(report);
+
+
+    }
+
+    @Override
+    public List<Report> getReports() {
+        return repositoryReport.findAll();
+    }
+
+    @Override
+    public void acknowledgeReport(Report report) {
+
+        Optional<Report> reportFound = repositoryReport.findById(report.getId());
+        if(reportFound.isEmpty())
+            throw new RuntimeException("Report not found");
+        Report r = reportFound.get();
+        repositoryReport.delete(r);
+
+
+
+    }
+
 
     final int defaultThreadsNo = 5;
     private void bugRequestChange(BugRequest bugRequest){
@@ -229,6 +263,25 @@ public class MasterService  implements IService {
         executor.shutdown();
 
     }
+
+    private void reportChange(Report report){
+        ExecutorService executor = Executors.newFixedThreadPool(defaultThreadsNo);
+        for( IObserver chatClient : loggedSysAdmins.values()){
+            executor.execute(() -> {
+                try {
+                    chatClient.reportChanged(report);
+                } catch (RuntimeException e) {
+                    System.err.println("Error notifying friend " + e);
+                }
+            });
+        }
+
+
+
+        executor.shutdown();
+
+    }
+
 
     private List<Programmer> getAllProgrammers(){
         return repositoryProgrammer.findAll();

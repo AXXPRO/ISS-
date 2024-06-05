@@ -8,10 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import model.BugRequest;
-import model.EmployeeAbstract;
-import model.Programmer;
-import model.Tester;
+import model.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -127,6 +124,27 @@ public class TesterController implements IObserver {
     }
 
     public void handleReportButton(ActionEvent event) {
+
+        if(!ensureCredentials())
+            return;
+
+        String reportTitle = reportTitleInputField.getText();
+        String reportDescription = reportDescriptionInputField.getText();
+        String coworkerEmail = coworkerList.getSelectionModel().getSelectedItem().getEmail();
+
+        if(coworkerEmail == null) {
+            return;
+        }
+        boolean isUrgent = urgentCheckBox.isSelected();
+
+        service.reportCoworker(reportTitle, reportDescription, coworkerEmail, isUrgent);
+
+        reportTitleInputField.clear();
+        reportDescriptionInputField.clear();
+        urgentCheckBox.setSelected(false);
+
+
+
     }
 
     public void handleSendBugButton(ActionEvent event) {
@@ -164,6 +182,11 @@ public class TesterController implements IObserver {
 
     @Override
     public void bugChanged(BugRequest bugRequest) {
+
+    }
+
+    @Override
+    public void reportChanged(Report report) {
 
     }
 }

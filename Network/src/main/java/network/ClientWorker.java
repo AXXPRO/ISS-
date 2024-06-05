@@ -264,6 +264,46 @@ public class ClientWorker implements Runnable, IObserver {
                 return JsonUtils.createNewErrorResponse(e.getMessage());
             }
         }
+        if (request.getType() == RequestType.GET_REPORTS){
+            System.out.println("Getting Reports");
+
+            try {
+
+                List<Report> reports = server.getReports();
+                    return JsonUtils.createNewGetReportsResponse(reports);
+
+
+            } catch (Exception e) {
+                return JsonUtils.createNewErrorResponse(e.getMessage());
+            }
+        }
+
+
+        if (request.getType() == RequestType.REPORT){
+            System.out.println("Checking Report");
+
+            try {
+                Report r = request.getReport();
+                server.reportCoworker(r.getName(), r.getDescription(), r.getReportedEmail(), r.getUrgentStatus());
+                    return JsonUtils.createNewOKResponse();
+
+            } catch (Exception e) {
+                return JsonUtils.createNewErrorResponse(e.getMessage());
+            }
+        }
+
+        if (request.getType() == RequestType.SOLVE_REPORT){
+            System.out.println("Solving Report");
+
+            try {
+                Report r = request.getReport();
+                server.acknowledgeReport(r);
+                return JsonUtils.createNewOKResponse();
+
+            } catch (Exception e) {
+                return JsonUtils.createNewErrorResponse(e.getMessage());
+            }
+        }
 
 
         return response;
@@ -297,5 +337,12 @@ public class ClientWorker implements Runnable, IObserver {
         System.out.println("Notifying all clients that a new register was made ...");
         sendResponse(resp);
 
+    }
+
+    @Override
+    public void reportChanged(Report report) {
+        Response resp = JsonUtils.createNewReportChangedResponse(report);
+        System.out.println("Notifying all clients that a new report was made ...");
+        sendResponse(resp);
     }
 }

@@ -8,6 +8,15 @@ public class Request {
     private RequestType Type;
     private Programmer programmer;
     private BugRequest bugRequest;
+    private Report report;
+
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
 
     private EmployeeAbstract employee;
 

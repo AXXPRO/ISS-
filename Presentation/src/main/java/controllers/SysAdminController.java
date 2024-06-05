@@ -2,14 +2,12 @@ package controllers;
 
 import Interfaces.IObserver;
 import Interfaces.IService;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import model.BugRequest;
-import model.EmployeeAbstract;
-import model.Programmer;
-import model.SysAdmin;
+import model.*;
 
 import java.util.Objects;
 
@@ -34,6 +32,9 @@ public class SysAdminController implements IObserver {
     public ListView<EmployeeAbstract> employeeList;
     public Button deleteAccount;
     public Button backButton;
+    public ListView<Report> reportTitleList;
+    public TextArea reportDescriptionTextArea;
+    public Button acknowledgeButton;
 
     IService server;
     Stage loginStage;
@@ -42,6 +43,31 @@ public class SysAdminController implements IObserver {
 
     @Override
     public void bugChanged(BugRequest bugRequest) {
+
+    }
+
+    @Override
+    public void reportChanged(Report report) {
+
+
+        Platform.runLater(() -> {
+            reportTitleList.getItems().add(report);
+            if(report.getUrgentStatus())
+            {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("URGENT REPORT ADDED");
+                alert.setHeaderText(report.toString());
+                alert.setContentText(report.getDescription());
+
+                alert.showAndWait();
+            }
+
+        });
+
+
+
+
+
 
     }
 
@@ -188,7 +214,31 @@ public class SysAdminController implements IObserver {
 
         });
 
+        reportTitleList.getItems().addAll(server.getReports());
 
+        reportTitleList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != null) {
+                reportDescriptionTextArea.setText(newValue.getDescription());
+            }
+            else {
+                reportDescriptionTextArea.setText("");
+            }
+        });
+
+
+
+    }
+
+    public void handleAcknowledgeButton(ActionEvent event) {
+
+        Report report = reportTitleList.getSelectionModel().getSelectedItem();
+        if(report == null)
+            return;
+
+        server.acknowledgeReport(report);
+
+        reportTitleList.getItems().remove(report);
+        reportDescriptionTextArea.clear();
 
     }
 }

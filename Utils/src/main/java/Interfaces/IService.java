@@ -32,4 +32,9 @@ public interface IService {
 
     public void deleteEmployeeAcount(String email);
 
+    public void reportCoworker(String title, String description, String email, boolean urgent);
+
+    List<Report> getReports();
+
+    void acknowledgeReport(Report report);
 }

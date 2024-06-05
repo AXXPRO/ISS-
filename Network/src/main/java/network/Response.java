@@ -10,7 +10,7 @@ public class Response {
 
     private Programmer programmer;
     private Tester tester;
-
+    private Report report;
     private List<BugRequest> bugRequests;
 
     private String errorMessage;
@@ -20,6 +20,14 @@ public class Response {
     List<EmployeeAbstract> employees;
 
     private BugRequest bugRequest;
+
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
 
     public BugRequest getBugRequest() {
         return bugRequest;
@@ -93,5 +101,14 @@ public class Response {
         return "Response{" +
                 "Type=" + Type +
                 '}';
+    }
+
+    private List<Report> reports;
+    public void setReports(List<Report> reports) {
+        this.reports = reports;
+    }
+
+    public List<Report> getReports() {
+        return reports;
     }
 }

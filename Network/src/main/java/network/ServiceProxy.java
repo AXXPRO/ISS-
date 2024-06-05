@@ -357,6 +357,56 @@ public class ServiceProxy implements IService {
         }
     }
 
+    @Override
+    public void reportCoworker(String title, String description, String email, boolean urgent) {
+
+            Report report = new Report();
+            report.setName(title);
+            report.setDescription(description);
+            report.setReportedEmail(email);
+            report.setUrgentStatus(urgent);
+
+            Request req = JsonUtils.createNewReportChangedRequest(report);
+            sendRequest(req);
+            Response response=readResponse();
+            if (response.getType()== ResponseType.ERROR){
+                String err=response.getErrorMessage();
+                closeConnection();
+                throw new RuntimeException(err);
+            }
+
+    }
+
+    @Override
+    public List<Report> getReports() {
+
+        Request req = JsonUtils.createNewGetReportsRequest();
+        sendRequest(req);
+        Response response=readResponse();
+        if (response.getType()== ResponseType.ERROR){
+            String err=response.getErrorMessage();
+            closeConnection();
+            throw new RuntimeException(err);
+        }
+        return response.getReports();
+
+    }
+
+    @Override
+    public void acknowledgeReport(Report report) {
+
+            Request req = JsonUtils.createNewSolveReportRequest(report);
+            sendRequest(req);
+            Response response=readResponse();
+            if (response.getType()== ResponseType.ERROR){
+                String err=response.getErrorMessage();
+                closeConnection();
+                throw new RuntimeException(err);
+            }
+
+
+    }
+
     private class ReaderThread implements Runnable{
         public void run() {
             BufferedReader inputTrue = new BufferedReader(new InputStreamReader(input));
@@ -372,7 +422,12 @@ public class ServiceProxy implements IService {
 
                     if (response.getType() == ResponseType.BUG_REQUEST_CHANGED) {
                         client.bugChanged(response.getBugRequest());
-                   } else
+                   }
+                    else if(response.getType() == ResponseType.REPORT){
+                        client.reportChanged(response.getReport());
+
+                    }
+                    else
                     {
                         try {
                           qresponses.add(response);

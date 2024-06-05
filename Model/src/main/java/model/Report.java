@@ -22,6 +22,17 @@ public class Report {
     @Column(name = "urgentstatus")
     private Boolean urgentStatus;
 
+    @Column
+    private String reportedEmail;
+
+    public String getReportedEmail() {
+        return reportedEmail;
+    }
+
+    public void setReportedEmail(String reportedEmail) {
+        this.reportedEmail = reportedEmail;
+    }
+
     public Long getId() {
         return id;
     }
@@ -52,5 +63,10 @@ public class Report {
 
     public void setUrgentStatus(Boolean urgentStatus) {
         this.urgentStatus = urgentStatus;
+    }
+
+    @Override
+    public String toString() {
+        return name  + " - " + reportedEmail ;
     }
 }

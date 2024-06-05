@@ -199,6 +199,45 @@ public class JsonUtils {
         return resp;
 
     }
+
+    public static Response createNewReportChangedResponse(Report report) {
+        Response resp = new Response();
+        resp.setType(ResponseType.REPORT);
+        resp.setReport(report);
+        return resp;
+
+    }
+    public static Request createNewReportChangedRequest(Report report) {
+        Request resp = new Request();
+        resp.setType(RequestType.REPORT);
+        resp.setReport(report);
+        return resp;
+
+    }
+
+    public static Response createNewGetReportsResponse(List<Report> reports) {
+        Response resp = new Response();
+        resp.setType(ResponseType.GET_REPORTS);
+        resp.setReports(reports);
+        return resp;
+
+    }
+    public static Request createNewGetReportsRequest() {
+        Request resp = new Request();
+        resp.setType(RequestType.GET_REPORTS);
+
+        return resp;
+
+    }
+    public static Request createNewSolveReportRequest(Report report) {
+        Request resp = new Request();
+        resp.setType(RequestType.SOLVE_REPORT);
+
+        resp.setReport(report);
+        return resp;
+
+    }
+
 //
 //    public static Request createNewLoginRequest(User user){
 //        Request req = new Request();
